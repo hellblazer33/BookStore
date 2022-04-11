@@ -8,7 +8,7 @@ create Table Wishlist
 );
 
 
-
+select * from Wishlist;
 
 DELIMITER &&
 create procedure AddInWishlist

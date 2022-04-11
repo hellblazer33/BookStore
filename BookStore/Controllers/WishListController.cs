@@ -10,34 +10,22 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
-    /// <summary>
-    /// Wish list Controller
-    /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+    
     [Route("api/[controller]")]
     [Authorize(Roles = Role.User)]
     [ApiController]
     public class WishListController : ControllerBase
     {
-        /// <summary>
-        /// The wish list BL
-        /// </summary>
+        
         private readonly IWishListBL wishlistBL;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WishListController"/> class.
-        /// </summary>
-        /// <param name="wishlistBL">The wish list BL</param>
+      
         public WishListController(IWishListBL wishlistBL)
         {
             this.wishlistBL = wishlistBL;
         }
 
-        /// <summary>
-        /// Adds the in wish list.
-        /// </summary>
-        /// <param name="bookId">The wish.</param>
-        /// <returns> Added Record in Wish List </returns>
+        
         [HttpPost("Add")]
         public IActionResult AddInWishlist(int bookId)
         {
@@ -60,11 +48,7 @@
             }
         }
 
-        /// <summary>
-        /// Deletes from wish list.
-        /// </summary>
-        /// <param name="wishlistId">The wish list identifier.</param>
-        /// <returns> True or False </returns>
+      
         [HttpDelete("Delete")]
         public IActionResult DeleteFromWishlist(int wishlistId)
         {
@@ -86,10 +70,6 @@
             }
         }
 
-        /// <summary>
-        /// Gets all from wish list.
-        /// </summary>
-        /// <returns> All Records From Wish List and Matching Records from Book </returns>
         [HttpGet("{UserId}/ Get")]
         public IActionResult GetCart()
         {

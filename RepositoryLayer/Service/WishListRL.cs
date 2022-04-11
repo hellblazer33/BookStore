@@ -10,41 +10,22 @@
     using MySql.Data.MySqlClient;
     using RepoLayer.Interface;
 
-    /// <summary>
-    ///  Service Class for Repo Layer
-    /// </summary>
+    
     public class WishListRL : IWishListRL
     {
-        /// <summary>
-        /// The SQL connection
-        /// </summary>
+       
         private MySqlConnection sqlConnection;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WishListRL"/> class.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
+       
         public WishListRL(IConfiguration configuration)
         {
             this.Configuration = configuration;
         }
 
-        /// <summary>
-        /// Gets the configuration.
-        /// </summary>
-        /// <value>
-        /// The configuration.
-        /// </value>
+       
         private IConfiguration Configuration { get; }
 
-        /// <summary>
-        /// Adds the in wish list.
-        /// </summary>
-        /// <param name="bookId">The book identifier.</param>
-        /// <param name="userId">The user identifier.</param>
-        /// <returns>
-        /// Added Record in Wish List
-        /// </returns>
+      
         public string AddInWishlist(int bookId, int userId)
         {
             try
@@ -83,14 +64,7 @@
             }
         }
 
-        /// <summary>
-        /// Deletes from Wish list.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <param name="wishlistId">The wish list identifier.</param>
-        /// <returns>
-        /// True or False
-        /// </returns>
+    
         public bool DeleteFromWishlist(int userId, int wishlistId)
         {
             try
@@ -124,13 +98,7 @@
             }
         }
 
-        /// <summary>
-        /// Gets all from Wish list.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <returns>
-        /// All Records From WishList and Matching Records from Book
-        /// </returns>
+     
         public List<WishModel> GetAllFromWishlist(int userId)
         {
             try
