@@ -4,12 +4,16 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using BusinessLayer.Interface;
     using CommonLayer.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Caching.Distributed;
+    using Microsoft.Extensions.Caching.Memory;
+    using Newtonsoft.Json;
 
     /// <summary>
     ///  Book Controller
@@ -19,15 +23,18 @@
     [ApiController]
     public class BookController : ControllerBase
     {
-        
-        private readonly IBookBL bookBL;
 
-        public BookController(IBookBL bookBL)
+        private readonly IBookBL bookBL;
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
+        public BookController(IBookBL bookBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.bookBL = bookBL;
+            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
 
-       
+
         [Authorize(Roles = Role.Admin)]
         [HttpPost("post")]
         public IActionResult AddBook(AddBookModel book)
@@ -121,26 +128,30 @@
 
         
         //[Authorize(Roles = Role.User)]
-        [Authorize]
-        [HttpGet("Get")]
-        public IActionResult GetBook()
+        //[Authorize]
+        [HttpGet("redisGetAllBooks")]
+        public async Task<IActionResult> GetAllBooksUsingRedisCache()
         {
-            try
+            var cacheKey = "BookList";
+            string serializedBookList;
+            var BookList = new List<BookModel>();
+            var redisBookList = await distributedCache.GetAsync(cacheKey);
+            if (redisBookList != null)
             {
-                var updatedBookDetail = this.bookBL.GetAllBooks();
-                if (updatedBookDetail != null)
-                {
-                    return this.Ok(new { Success = true, message = "Book Detail Fetched Sucessfully", Response = updatedBookDetail });
-                }
-                else
-                {
-                    return this.BadRequest(new { Success = false, message = "Enter Correct Book Id" });
-                }
+                serializedBookList = Encoding.UTF8.GetString(redisBookList);
+                BookList = JsonConvert.DeserializeObject<List<BookModel>>(serializedBookList);
             }
-            catch (Exception ex)
+            else
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                BookList = (List<BookModel>)bookBL.GetAllBooks();
+                serializedBookList = JsonConvert.SerializeObject(BookList);
+                redisBookList = Encoding.UTF8.GetBytes(serializedBookList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisBookList, options);
             }
+            return Ok(BookList);
         }
     }
 }

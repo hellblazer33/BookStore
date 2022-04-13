@@ -9,6 +9,8 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    //using Microsoft.Extensions.Caching.Distributed;
+    //using Microsoft.Extensions.Caching.Memory;
 
     /// <summary>
     /// User Controller
@@ -18,38 +20,38 @@
     [ApiController]
     public class UserController : ControllerBase
     {
-        /// <summary>
-        /// The user interface from business layer
-        /// </summary>
+       
         private readonly IUserBL userBL;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserController"/> class.
-        /// </summary>
-        /// <param name="userBL">The user interface.</param>
+        const string SessionFullName = "FullName";
+        const string SessionEmail = "Email";
+
+       
+
+
         public UserController(IUserBL userBL)
         {
             this.userBL = userBL;
         }
 
-        /// <summary>
-        /// Adds the user.
-        /// </summary>
-        /// <param name="userRegistration">The user registration.</param>
-        /// <returns>Registered User Details</returns>
+
         [HttpPost("Register")]
         public IActionResult AddUser(UserModel userRegistration)
         {
             try
             {
+                HttpContext.Session.SetString(SessionFullName, userRegistration.Fullname);
+                HttpContext.Session.SetString(SessionEmail, userRegistration.Email);
                 var user = this.userBL.Register(userRegistration);
                 if (user != null)
                 {
+                    var name = HttpContext.Session.GetString(SessionFullName);
+                    var email = HttpContext.Session.GetString(SessionEmail);
                     return this.Ok(new { Success = true, message = "User Added Sucessfully", Response = user });
                 }
                 else
                 {
-                    return this.BadRequest(new { Success = false, message = "Enter Different Email" });
+                    return this.BadRequest(new { Success = false, message = "User Added Unsuccessfully" });
                 }
             }
             catch (Exception ex)
@@ -58,12 +60,7 @@
             }
         }
 
-        /// <summary>
-        /// Users the login.
-        /// </summary>
-        /// <param name="email">The email.</param>
-        /// <param name="password">The password.</param>
-        /// <returns>Login Token</returns>
+
         [HttpPost("Login")]
         public IActionResult UserLogin(string email, string password)
         {
@@ -85,11 +82,7 @@
             }
         }
 
-        /// <summary>
-        /// Forgot the password.
-        /// </summary>
-        /// <param name="email">The email.</param>
-        /// <returns>Forgot Password Token</returns>
+       
 
 
         [HttpPost("ForgotPassword")]

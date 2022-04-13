@@ -10,36 +10,22 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
-    /// <summary>
-    /// Orders Controller
-    /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+    
     [Route("api/[controller]")]
     [Authorize(Roles = Role.User)]
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        /// <summary>
-        /// The order BL
-        /// </summary>
+        
         private readonly IOrderBL orderBL;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OrdersController"/> class.
-        /// </summary>
-        /// <param name="orderBL">The order BL</param>
+      
         public OrdersController(IOrderBL orderBL)
         {
             this.orderBL = orderBL;
         }
 
-        /// <summary>
-        /// Adds the order.
-        /// </summary>
-        /// <param name="ordersModel">The order.</param>
-        /// <returns>
-        /// Order Added in the System
-        /// </returns>
+       
         [HttpPost("Order")]
         public IActionResult AddOrders(OrderModel ordersModel)
         {
@@ -62,10 +48,7 @@
             }
         }
 
-        /// <summary>
-        /// Gets all orders.
-        /// </summary>
-        /// <returns> Get All Order from Orders </returns>
+      
         [HttpGet("Get")]
         public IActionResult GetAllOrders()
         {

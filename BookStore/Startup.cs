@@ -70,6 +70,12 @@ namespace BookStore
 
             services.AddTransient<IAdminBL, AdminBL>();
             services.AddTransient<IAdminRL, AdminRL>();
+            services.AddMemoryCache();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+            });
 
 
             // Adding Swagger in Services Collection.
@@ -95,6 +101,12 @@ namespace BookStore
                     { securitySchema, new[] { "Bearer" } }
                 });
             });
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+            });
+
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

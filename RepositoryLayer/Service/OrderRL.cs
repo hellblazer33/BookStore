@@ -16,36 +16,19 @@
     /// <seealso cref="RepoLayer.Interface.IOrderRL" />
     public class OrderRL : IOrderRL
     {
-        /// <summary>
-        /// The SQL connection
-        /// </summary>
+        
         private MySqlConnection sqlConnection;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OrderRL"/> class.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
+      
         public OrderRL(IConfiguration configuration)
         {
             this.Configuration = configuration;
         }
 
-        /// <summary>
-        /// Gets the configuration.
-        /// </summary>
-        /// <value>
-        /// The configuration.
-        /// </value>
+       
         private IConfiguration Configuration { get; }
 
-        /// <summary>
-        /// Adds the order.
-        /// </summary>
-        /// <param name="order">The order.</param>
-        /// <param name="userId">The user identifier.</param>
-        /// <returns>
-        /// Order Added in the System
-        /// </returns>
+       
         public OrderModel AddOrder(OrderModel order, int userId)
         {
             try
@@ -87,13 +70,7 @@
             }
         }
 
-        /// <summary>
-        /// Gets all order.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <returns>
-        /// Get All Order from Orders
-        /// </returns>
+    
         public List<OrderModel> GetAllOrder(int userId)
         {
             try
